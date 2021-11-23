@@ -36,3 +36,11 @@ END;
 
 
 ---
+
+
+-- ANother example
+begin
+for rec in (select* from all_tables) loop
+dbms_output.put_line(rec.table_name);
+end loop;
+end;
