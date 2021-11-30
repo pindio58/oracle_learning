@@ -1,54 +1,94 @@
 CREATE OR REPLACE FUNCTION abc (
-    a   VARCHAR2    
+    a VARCHAR2
 ) RETURN VARCHAR2 AS
     namess VARCHAR2(100) := '1';
 BEGIN
-    with details as (select decode (lower(a),'capital',64,96) nums from dual)
-    select listagg(chr(level+det.nums),'') within group (order by null) into namess from details det
-    connect by level<=26;
-    return namess;
+    WITH details AS (
+        SELECT
+            decode(lower(a), 'capital', 64, 96) nums
+        FROM
+            dual
+    )
+    SELECT
+        LISTAGG(chr(level + det.nums), '') WITHIN GROUP(
+        ORDER BY
+            NULL
+        )
+    INTO namess
+    FROM
+        details det
+    CONNECT BY
+        level <= 26;
+
+    RETURN namess;
 END;
 
+SELECT
+    abc('small') letters
+FROM
+    dual;
 
-select abc('small') letters from dual;
+WITH alll AS (
+    SELECT
+        'jeet' aaa
+    FROM
+        dual
+)
+SELECT
+    CASE aaa
+        WHEN regexp_like('[:lower:]') THEN
+            ''
+        ELSE
+            'kidda'
+    END naam
+FROM
+    alll;
 
-with alll as (select 'jeet' aaa from dual)
-select case aaa
-when regexp_like('[:lower:]') then''
-else 'kidda' end naam from alll;
+SELECT
+    tzname,
+    COUNT(*)
+FROM
+    gv$timezone_names
+GROUP BY
+    tzname;
 
-SELECT tzname, COUNT(*) FROM   gv$timezone_names GROUP by tzname;
-
-select 
-       SYSTIMESTAMP at time zone 'Africa/Johannesburg' south_africa_time
-from dual;
-
+SELECT
+    systimestamp AT TIME ZONE 'Africa/Johannesburg' south_africa_time
+FROM
+    dual;
 
 
 --=====================
 
+CREATE OR REPLACE FUNCTION details (
+    query_selector VARCHAR2 DEFAULT NULL
+) RETURN SYS_REFCURSOR AS
+    return_cursor SYS_REFCURSOR;
+BEGIN
+    IF upper(query_selector) = 'EMP' THEN
+        OPEN return_cursor FOR SELECT
+                                   last_name,
+                                   employee_id
+                               FROM
+                                   hr.employees;
 
-create or replace function details(query_selector varchar2 DEFAULT NULL) return SYS_REFCURSOR  as
-return_cursor SYS_REFCURSOR;
-begin
-    if upper(query_selector)='EMP' then
-    open return_cursor for select last_name,employee_id from hr.employees;
-    else
-    open return_cursor for select department_name,department_id from hr.departments;
-    end if;
-    
-    return return_cursor;
-end ;
+    ELSE
+        OPEN return_cursor FOR SELECT
+                                   department_name,
+                                   department_id
+                               FROM
+                                   hr.departments;
 
+    END IF;
+
+    RETURN return_cursor;
+END;
  --==================================================================================================================================================
- 
- 
-declare
 
-return_cursor SYS_REFCURSOR;
-v_name VARCHAR2(40);
-v_number number;
-
+DECLARE
+    return_cursor SYS_REFCURSOR;
+    v_name        VARCHAR2(40);
+    v_number      NUMBER;
 BEGIN
     dbms_output.put_line('************************ EMPLOYEE DETAILS ************************');
     return_cursor := details('emp');
@@ -64,6 +104,7 @@ BEGIN
                              || v_number);
 
     END LOOP;
+
     dbms_output.put_line(chr(10));
 ---
 
@@ -81,7 +122,6 @@ BEGIN
 
 END;
 
-
 --==================================================================================================================================================
 
 SELECT
@@ -89,7 +129,6 @@ SELECT
 FROM
     TABLE ( sys.dbms_debug_vc2coll(60, 100) );
 /
-
 
 --==================================== Create a procedure for creating table depending on whether it exists or not ====================================
 CREATE OR REPLACE PROCEDURE p_table_create (
@@ -141,22 +180,28 @@ END;
 
 BEGIN
     p_table_create;
-    commit;
-    DBMS_OUTPUT.put_line(SQL%ROWCOUNT);
+    COMMIT;
+    dbms_output.put_line(SQL%rowcount);
 END;
 /
  
- --========================================= CREATE A VIEW  =================================================
- 
-select * from user_constraints where table_name='EMPS';
+ --============================================ CREATE A VIEW  ===========================================================
+
+SELECT
+    *
+FROM
+    user_constraints
+WHERE
+    table_name = 'EMPS';
 /
 
 BEGIN
     EXECUTE IMMEDIATE 'create or replace view v_emps as select employee_id, department_id, first_name,last_name from emps';
-    commit;
+    COMMIT;
 END;
 / 
---========================================= CREATE A SEQUENCE  ===============================================
+
+--============================================= CREATE A SEQUENCE  =======================================================
 
 DECLARE
     v_num NUMBER;
@@ -172,7 +217,6 @@ BEGIN
     IF ( v_num > 0 ) THEN
         EXECUTE IMMEDIATE 'DROP sequence new_numbers';
     END IF;
-    
     SELECT
         MAX(employee_id)
     INTO v_num
