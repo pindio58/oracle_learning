@@ -59,16 +59,4 @@ EXCEPTION
 END;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+create table emps (employee_id nUMBER);

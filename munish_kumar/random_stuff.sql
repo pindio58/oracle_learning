@@ -55,3 +55,81 @@ commit;
 --===
 execute <procdure name>;
 exec <procdure name>;
+
+
+
+--============================================================================================================================================
+CREATE OR REPLACE FUNCTION calc_area (
+    radius NUMBER DEFAULT 2
+) RETURN NUMBER AS
+    v_area NUMBER;
+BEGIN
+    v_area := 3.14 * power(radius, 2);
+    RETURN v_area;
+END;
+/
+
+--============================================================================================================================================
+DECLARE
+    v_num NUMBER;
+BEGIN
+    SELECT
+        COUNT(1)
+    INTO v_num
+    FROM
+        user_tables
+    WHERE
+        upper(table_name) = 'EMPS';
+
+    IF ( v_num = 1 ) THEN
+        EXECUTE IMMEDIATE 'DROP TABLE EMPS';
+    END IF;
+END;
+/
+
+
+--============================================================================================================================================
+-- how to write a csv file from pl sql
+--============================================================================================================================================
+
+create or replace directory temp_dir as '/home/jeet/'
+/
+commit;
+grant read on DIRECTORY temp_dir to system;
+
+DECLARE
+    f    utl_file.file_type;
+    CURSOR c1 IS
+    SELECT
+        employee_id,
+        first_name,
+        last_name,
+        e.department_id,
+        department_name
+    FROM
+        hr.employees   e,
+        hr.departments d
+    WHERE
+        e.department_id = d.department_id
+    ORDER BY
+        employee_id;
+
+    c1_r c1%rowtype;
+BEGIN
+    f := utl_file.fopen('temp_dir', 'EMP_DEPT.CSV', 'w', 32767);
+    FOR c1_r IN c1 LOOP
+        utl_file.put(f, c1_r.employee_id);
+        utl_file.put(f, ',' || c1_r.first_name);
+        utl_file.put(f, ',' || c1_r.last_name);
+        utl_file.put(f, ',' || c1_r.department_id);
+        utl_file.put(f, ',' || c1_r.department_name);
+        utl_file.new_line(f);
+    END LOOP;
+
+    utl_file.fclose(f);
+END;
+/
+
+--=========== hwo to connect as sysdba================
+
+--connect sys/a@abcd as sysdba

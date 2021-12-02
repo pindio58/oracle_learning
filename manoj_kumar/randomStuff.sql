@@ -233,3 +233,25 @@ BEGIN
     COMMIT;
 END;
 /
+
+
+---========================  This is what i am looking for 
+
+SELECT
+    column_value
+FROM
+    TABLE ( sys.odcinumberlist(1, 1, 2, 3, 3,
+                               4, 4, 5) );
+
+SELECT
+    column_value
+FROM
+    TABLE ( sys.dbms_debug_vc2coll(1, 1, 2, 3, 3,
+                                   4, 4, 5) );
+                                   
+--===================
+SELECT
+    column_value
+FROM
+    TABLE ( sys.dbms_debug_vc2coll(1, 2, 3, 3, 4,
+                                   4, 5) );
