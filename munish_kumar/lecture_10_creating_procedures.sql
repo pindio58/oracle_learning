@@ -7,10 +7,26 @@ Few Notes:
     If I use AUTHID as DEFINER      and run the procesure from 'temp' user, it will populate the table areas in 'powerful' schema only
 
 ****************************************************************************************************************************************/
+DECLARE
+    v_num NUMBER;
+BEGIN
+    SELECT
+        COUNT(1)
+    INTO v_num
+    FROM
+        user_tables
+    WHERE
+        upper(table_name) = 'AREAS';
 
-create table areas (givenInput NUMBER,area NUMBER);
-commit;
-drop table areas;
+    IF ( v_num = 1 ) THEN
+        EXECUTE IMMEDIATE 'drop table areas';
+    END IF;
+    EXECUTE IMMEDIATE 'create table areas (givenInput NUMBER,area NUMBER)';
+    COMMIT;
+END;
+/
+
+
 --=============================================================================================================================================
 
 

@@ -133,3 +133,22 @@ END;
 --=========== hwo to connect as sysdba================
 
 --connect sys/a@abcd as sysdba
+
+
+--===================================================
+
+--reverse
+select to_number(reverse(to_char(123445))) "reversed number" from dual;
+
+--count
+create table temp (vv number);
+insert into temp values(null);
+
+select count(1) from temp;
+
+-- print
+BEGIN
+    dbms_output.put_line('This string breaks here.');
+    end;
+END;
+/
