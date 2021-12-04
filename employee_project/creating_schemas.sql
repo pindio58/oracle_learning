@@ -6,27 +6,28 @@ CREATE OR REPLACE PROCEDURE sp_create_schema (
 ) IS
 
     v_num        NUMBER;
-    v_password   VARCHAR2(10) := v_name || '123';
-    stmt         VARCHAR2(150);
-    tblespace    VARCHAR2(30) := 'DEFAULT TABLESPACE USERS ';
-    quotaclause  VARCHAR2(30) := 'QUOTA UNLIMITED ON USERS ';
-    enabledition VARCHAR2(30) := 'ENABLE EDITIONS';
+    v_password   VARCHAR2(30) := v_name || '123';
+    stmt         VARCHAR2(250);
+    tblespace    VARCHAR2(30) := ' DEFAULT TABLESPACE USERS';
+    quotaclause  VARCHAR2(30) := ' QUOTA UNLIMITED ON USERS';
+    enabledition VARCHAR2(30) := ' ENABLE EDITIONS';
 BEGIN
     SELECT
         CASE
             WHEN upper(v_name) IN ( 'APP_DATA', 'APP_CODE', 'APP_ADMIN' ) THEN
                 'CREATE USER '
                 || v_name
-                || 'IDENTIFIED BY '
+                || ' IDENTIFIED BY '
                 || v_password
                 || tblespace
                 || quotaclause
-                || enabledition
+          --       || enabledition
             ELSE
                 'CREATE USER '
                 || v_name
-                || 'IDENTIFIED BY '
-                || enabledition
+                || ' IDENTIFIED BY '
+                || v_password
+          --      || enabledition
         END
     INTO stmt
     FROM
@@ -36,9 +37,9 @@ BEGIN
         COUNT(1)
     INTO v_num
     FROM
-        user_objects
+        all_users
     WHERE
-        upper(object_name) = upper(v_name);
+        upper(username) = upper(v_name);
 
     IF ( v_num = 1 ) THEN
         EXECUTE IMMEDIATE 'DROP user '
@@ -50,3 +51,17 @@ BEGIN
     COMMIT;
 END sp_create_schema;
 /
+
+-- call to create the schemas --
+BEGIN
+    FOR i IN (
+        SELECT
+            column_value
+        FROM
+            TABLE ( sys.dbms_debug_vc2coll('APP_DATA', 'APP_CODE', 'APP_ADMIN', 'APP_USER', 'APP_ADMIN_USER') )
+    ) LOOP
+        sp_create_schema(i.column_value);
+    END LOOP;
+END;
+/
+
