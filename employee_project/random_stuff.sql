@@ -29,3 +29,12 @@ BEGIN
                          || dbms_random.string('x', 10));
 END;
 /
+
+SELECT
+            column_value,  dbms_random.string('p', 20)
+        FROM
+            TABLE ( sys.dbms_debug_vc2coll('APP_DATA', 'APP_CODE', 'APP_ADMIN', 'APP_USER', 'APP_ADMIN_USER')), dual;
+            
+--== lock / unlock
+ALTER USER hr IDENTIFIED BY hr ACCOUNT UNLOCK;
+ALTER USER hr IDENTIFIED BY hr ACCOUNT LOCK;
