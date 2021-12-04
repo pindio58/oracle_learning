@@ -7,10 +7,12 @@ There are two types of case statemnets:
 */
 
 
-
 -- simple case
 
-select * from emps;
+SELECT
+    *
+FROM
+    emps;
 
 SELECT
     first_name,
@@ -26,15 +28,13 @@ FROM
     
 -- Second (search statement)
 
-
 SELECT
     first_name,
-    CASE 
-        WHEN first_name='Steven' THEN
+    CASE
+        WHEN first_name = 'Steven' THEN
             100
         ELSE
             0
     END AS grade
 FROM
     emps;
-     

@@ -4,12 +4,12 @@
 DECLARE
     v_hindi NUMBER;
 BEGIN
-    v_hindi := :hindi;
+    v_hindi := &hindi;
     IF ( v_hindi > 33 ) THEN
         dbms_output.put_line('PASSED');
     END IF;
 END;
-
+/
 
 
 --here we are going to study if else statement only

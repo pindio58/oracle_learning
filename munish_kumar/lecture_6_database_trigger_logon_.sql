@@ -48,6 +48,6 @@ CREATE OR REPLACE TRIGGER database_schema BEFORE LOGOFF ON DATABASE BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(-20000, 'Unexpected error: ' || dbms_utility.format_error_stack);
-END;
+END database_schema;
 /
 commit;

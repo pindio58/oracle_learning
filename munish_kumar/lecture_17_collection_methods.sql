@@ -72,7 +72,6 @@ BEGIN
 END;
 /
 
-
 --=== Exists ===
 
 DECLARE
@@ -86,14 +85,15 @@ BEGIN
     ELSE
         dbms_output.put_line('No data found');
     END IF;
-        IF ( my_table.EXISTS(9) ) THEN
+
+    IF ( my_table.EXISTS(9) ) THEN
         dbms_output.put_line('value at specified location: ' || my_table(2));
     ELSE
         dbms_output.put_line('No data found');
     END IF;
+
 END;
 /
-
 
 --=== First and last ===
 
@@ -109,12 +109,11 @@ END;
 /
 
 
-
 --=== Limit ===
 
 DECLARE
     TYPE varr IS
-        VARRAY(5) OF varchar(25);
+        VARRAY(5) OF VARCHAR(25);
     v_arr varr := varr(NULL, 4);
 BEGIN
     dbms_output.put_line('Size of vArray is: ' || v_arr.limit);
@@ -122,9 +121,19 @@ BEGIN
 END;
 /
 
-
 --=== Prior and Next ===
 
+DECLARE
+    TYPE nested_table IS
+        TABLE OF VARCHAR2(5);
+    my_table nested_table := nested_table(2, 9, 5, 6, 7,
+                                         1, 97);
+BEGIN
+    dbms_output.put_line('Prior to index 3 --> ' || my_table.PRIOR(3));
+    dbms_output.put_line('Value at Prior to index 3 --> '
+                         || my_table(my_table.PRIOR(3)));
+END;
+/
 
 DECLARE
     TYPE nested_table IS
@@ -132,47 +141,33 @@ DECLARE
     my_table nested_table := nested_table(2, 9, 5, 6, 7,
                                          1, 97);
 BEGIN
-    dbms_output.put_line('Prior to index 3 --> '||my_table.prior(3));
-    dbms_output.put_line('Value at Prior to index 3 --> '||my_table(my_table.prior(3)));
+    dbms_output.put_line('Next to index 3 --> ' || my_table.next(3));
+    dbms_output.put_line('Value at Next to index 3 --> '
+                         || my_table(my_table.next(3)));
 END;
 /
-
-
-DECLARE
-    TYPE nested_table IS
-        TABLE OF VARCHAR2(5);
-    my_table nested_table := nested_table(2, 9, 5, 6, 7,
-                                         1, 97);
-BEGIN
-    dbms_output.put_line('Next to index 3 --> '||my_table.next(3));
-    dbms_output.put_line('Value at Next to index 3 --> '||my_table(my_table.next(3)));
-END;
-/
-
 
 
 --=== Delete ===
 
-
 DECLARE
     TYPE nested_table IS
         TABLE OF VARCHAR2(5);
     my_table nested_table := nested_table(2, 9, 5, 6, 7,
                                          1, 97);
 BEGIN
-    dbms_output.put_line('Value to index 3 before applying DELETE--> '||my_table(3));
-    my_table.delete(3);
-    dbms_output.put_line('Value to index 3 before applying DELETE--> '||my_table(3));
+    dbms_output.put_line('Value to index 3 before applying DELETE--> ' || my_table(3));
+    my_table.DELETE(3);
+    dbms_output.put_line('Value to index 3 before applying DELETE--> ' || my_table(3));
     
 -- handling exception since after deleting no data will be found at locations 3
-EXCEPTION WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('Deleted the data, so there is no data at specified location');
+EXCEPTION
+    WHEN OTHERS THEN
+        dbms_output.put_line('Deleted the data, so there is no data at specified location');
 END;
 /
 
-
 -----
-
 
 DECLARE
     TYPE nested_table IS
@@ -223,7 +218,6 @@ END;
 /
 
 
-
 --===== EXTEND =====
 
 DECLARE
@@ -231,13 +225,13 @@ DECLARE
         TABLE OF VARCHAR2(5);
     my_table nested_table := nested_table(2);
 BEGIN
-    my_table.EXTEND(5,1);                       -- Hope this single example covers all types
+    my_table.extend(5, 1);                       -- Hope this single example covers all types
     FOR i IN 1..my_table.last LOOP
         dbms_output.put_line(my_table(i));
     END LOOP;
+
 END;
 /
-
 
 
 

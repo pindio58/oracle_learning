@@ -7,10 +7,21 @@ DECLARE
 -- how to use 
 --  var4.emp_name
 
-var4 emps%ROWTYPE;
+    var4 hr.employees%rowtype;
 BEGIN
-SELECT employee_id into var4.employee_id from emps where last_name=:v_name;
-dbms_output.put_line(var4.employee_id);
-END;
+    SELECT
+        employee_id
+    INTO var4.employee_id
+    FROM
+        hr.employees
+    WHERE
+        rownum=1;
 
-select * from emps;
+    dbms_output.put_line(var4.employee_id);
+END;
+/
+
+SELECT
+    *
+FROM
+    emps;

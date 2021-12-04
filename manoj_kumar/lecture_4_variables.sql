@@ -1,6 +1,6 @@
 /*
 What are variables ?
-    it allocates mempry for the variable
+    it allocates memory for the variable
     should be valid NAME
     valid datatype
     valid width

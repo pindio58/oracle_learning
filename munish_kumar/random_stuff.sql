@@ -152,3 +152,26 @@ BEGIN
     end;
 END;
 /
+
+
+--=====================================================
+
+DECLARE
+    v_name VARCHAR2(25);
+BEGIN
+    EXECUTE IMMEDIATE 'select count(1) from hr.employees'
+    INTO v_name;
+    dbms_output.put_line(v_name);
+END;
+/
+
+BEGIN
+--dml --
+    UPDATE hr.employees
+    SET
+        last_name = 'jeet';
+
+END;
+/
+
+select * from hr.employees;
