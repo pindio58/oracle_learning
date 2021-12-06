@@ -38,3 +38,68 @@ SELECT
 --== lock / unlock
 ALTER USER hr IDENTIFIED BY hr ACCOUNT UNLOCK;
 ALTER USER hr IDENTIFIED BY hr ACCOUNT LOCK;
+
+
+--===
+
+DROP TABLE JOBS CASCADE CONSTRAINTS;
+DROP TABLE DEPARTMENTS CASCADE CONSTRAINTS;
+DROP TABLE JOB_HISTORY CASCADE CONSTRAINTS;
+DROP TABLE EMPLOYEES CASCADE CONSTRAINTS;
+
+--===
+
+SELECT  * FROM jobs;
+SELECT  * FROM aud;
+SELECT  * FROM user_tables WHERE upper(table_name) IN ( SELECT  upper(obj_name)  FROM  aud);
+
+--== from app_code ===
+SET LINESIZE 80
+SET SPACE 2
+SET RECSEP WRAPPED
+SET RECSEPCHAR "="
+COLUMN NAME FORMAT A15 WORD_WRAPPED
+COLUMN HIRE_DATE FORMAT A20 WORD_WRAPPED
+COLUMN DEPARTMENT_NAME FORMAT A10 WORD_WRAPPED
+COLUMN JOB_TITLE FORMAT A29 WORD_WRAPPED
+COLUMN MANAGER FORMAT A11 WORD_WRAPPED;
+
+begin
+    employees_pkg.change_job( 101, 'AD_VP', 17500, 90 );
+end;
+/
+
+--===============  For sql plus ================
+
+SET LINESIZE 80
+SET RECSEP WRAPPED
+SET RECSEPCHAR "="
+COLUMN NAME FORMAT A15 WORD_WRAPPED
+COLUMN HIRE_DATE FORMAT A20 WORD_WRAPPED
+COLUMN DEPARTMENT_NAME FORMAT A10 WORD_WRAPPED
+COLUMN JOB_TITLE FORMAT A29 WORD_WRAPPED
+COLUMN MANAGER FORMAT A11 WORD_WRAPPED
+
+--============ rough work ==========
+
+SELECT naam,subject, round(AVG(percentage),2) AS percentage
+FROM (
+    SELECT naam,DECODE(unpivot_row, 1, 'Math',
+                               2, 'Science',
+                               3, 'Computer') AS subject,
+           DECODE(unpivot_row, 1, math,
+                               2, science,
+                               3, computer) AS percentage
+    FROM tablea
+    CROSS JOIN (SELECT level AS unpivot_row FROM dual CONNECT BY level <= 3)
+)
+GROUP BY naam,subject
+ORDER BY subject;
+
+drop table tablea;
+create table tablea (naam varchar(15),math number, science number, computer number);
+insert into tablea values(90,89,95);
+insert into tablea values(99,98,98);
+insert into tablea values('JIm',85,75,90);
+select * from tablea;
+delete from tablea;

@@ -1,7 +1,7 @@
 --=========================================
 -- Creating the schemas
 --=========================================
-CREATE OR REPLACE PROCEDURE sp_create_schema (
+CREATE OR REPLACE PROCEDURE sp_internal_schema_creation (
     v_name VARCHAR2
 ) IS
 
@@ -49,10 +49,17 @@ BEGIN
 
     EXECUTE IMMEDIATE stmt;
     COMMIT;
-END sp_create_schema;
+EXCEPTION
+    WHEN OTHERS THEN
+        dbms_output.put_line(sqlcode
+                             || ': '
+                             || sqlerrm);
+END sp_internal_schema_creation;
 /
 
+
 -- call to create the schemas --
+CREATE OR REPLACE PROCEDURE sp_create_schema IS
 BEGIN
     FOR i IN (
         SELECT
@@ -60,8 +67,11 @@ BEGIN
         FROM
             TABLE ( sys.dbms_debug_vc2coll('APP_DATA', 'APP_CODE', 'APP_ADMIN', 'APP_USER', 'APP_ADMIN_USER') )
     ) LOOP
-        sp_create_schema(i.column_value);
+        sp_internal_schema_creation(i.column_value);
     END LOOP;
-END;
-/
-
+EXCEPTION
+    WHEN OTHERS THEN
+        dbms_output.put_line(sqlcode
+                             || ': '
+                             || sqlerrm);
+END sp_create_schema;

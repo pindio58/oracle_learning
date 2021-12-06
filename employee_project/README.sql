@@ -23,5 +23,26 @@ This is the documentation fro the application design wich will note down the ste
         *   Granting Privileges to the app_admin Schema only the privileges to do the following:
                 Connect to Oracle Database:
                 Create the package admin_pkg:
+                Create synonyms (for convenience)
+        *   Granting Privileges to the app_user and app_admin_user Schemas only the privileges to do the following:
+                Connect to Oracle Database:
                 Create synonyms (for convenience):
+    
+    4)  Creating the Schema Objects and Loading the Data
+        *   This section shows how to create the tables, editioning views, triggers, and sequences for the application, how to load data into the tables, and how to 
+                grant privileges on these schema objects to the users that need them.
+
+        *   To create the schema objects and load the data:
+                Connect to Oracle Database as user app_data.
+                create the tables, with all necessary constraints except the foreign key constraint that you must add after you load the data.
+                Create the editioning views.
+                Create the triggers.
+                Create the sequences.
+                Load the data into the tables.
+                Add the foreign key constraint.
+                
+        *   Create the view
+        *   Create the triggers
+
+
 */
