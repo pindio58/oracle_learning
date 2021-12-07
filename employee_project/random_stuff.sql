@@ -41,6 +41,7 @@ ALTER USER hr IDENTIFIED BY hr ACCOUNT LOCK;
 
 
 --===
+rollback;
 
 DROP TABLE JOBS CASCADE CONSTRAINTS;
 DROP TABLE DEPARTMENTS CASCADE CONSTRAINTS;
@@ -103,3 +104,35 @@ insert into tablea values(99,98,98);
 insert into tablea values('JIm',85,75,90);
 select * from tablea;
 delete from tablea;
+
+
+--===
+
+-- E2E Testing
+
+-- First Step(default) from admin
+1) Compile creating_schemas.sql-- DOne
+2) Compile granting_privs.sql --Done
+3) Exceute both above -- DONE 
+4) create triggers
+
+--Second step   from app_data
+5)  Compile created_objects
+6)  compile data loading
+7) EXECUTE both
+
+--Third step from app_code
+8) Compile synomyms
+9) compile emp package
+10) execute both
+
+--fourth step , from app_admin
+11) Compile synomyms
+12) compile emp package
+13) execute both
+
+--fifth step-
+14) User testing for Typical users
+
+--Sixth step, from app_admin_user
+15) User testing for admin users

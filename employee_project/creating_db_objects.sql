@@ -1,8 +1,8 @@
 --===================
 --Defining Package
 --===================
-CREATE OR REPLACE PACKAGE create_db_objects AS
-    PROCEDURE sp_create_objects;
+CREATE OR REPLACE PACKAGE create_db_objects authid current_user AS
+    PROCEDURE sp_create_objects ;
 
     PROCEDURE sp_create_views;
 
@@ -100,16 +100,15 @@ CREATE OR REPLACE PACKAGE BODY create_db_objects AS
                                     end_date   DATE
                                         CONSTRAINT job_hist_end_date_not_null NOT NULL,
                                     department_id
-                                        CONSTRAINT job_hist_to_departments_fk
-                                            REFERENCES departments
+                                        CONSTRAINT job_hist_to_departments_fk  REFERENCES departments
                                         CONSTRAINT job_hist_dept_id_not_null NOT NULL,
-                                    CONSTRAINT job_history_pk PRIMARY KEY ( employee_id,
-                                                                            start_date ),
-                                    CONSTRAINT job_history_date_check CHECK ( start_date < end_date )
+                                        CONSTRAINT job_history_pk PRIMARY KEY ( employee_id, start_date ),
+                                        CONSTRAINT job_history_date_check CHECK ( start_date < end_date )
                                 )';
     BEGIN
+        --EXECUTE IMMEDIATE 'CREATE TABLE AUD (obj_id NUMBER, obj_name VARCHAR2(25),create_dt VARCHAR2(25))';  -- create a fresh AUD table
         FOR i IN ( SELECT column_value FROM  TABLE ( sys.dbms_debug_vc2coll( 'jobs', 'departments', 'employees', 'job_history') ) ) LOOP
-
+            v_num:=0;
             SELECT COUNT(1) INTO v_num  FROM user_tables WHERE upper(table_name) = upper(i.column_value);
             
             --audit --
